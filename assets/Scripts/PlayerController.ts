@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, input, Input, EventTouch, EventMouse, view } from 'cc';
+import { _decorator, Component, Node, input, Input, EventTouch, EventMouse, screen } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -16,25 +16,28 @@ export default class PlayerController extends Component {
     private isDead: boolean = false;
 
     start() {
-    // Берём groundY с позиции которую ты выставил в редакторе
-    this.groundY = this.node.position.y;
+        this.groundY = this.node.position.y;
 
-    input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
-    input.on(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
-}
+        input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
+        input.on(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
+        screen.on('orientation-change', this.onOrientationChange, this);
+    }
 
     onDestroy() {
         input.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
         input.off(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
+        screen.off('orientation-change', this.onOrientationChange, this);
     }
 
-    onTouchStart(event: EventTouch) {
-        this.jump();
+    onOrientationChange() {
+        // При смене ориентации — возвращаем игрока на землю
+        this.node.setPosition(this.node.position.x, this.groundY, 0);
+        this.velocity = 0;
+        this.isGrounded = true;
     }
 
-    onMouseDown(event: EventMouse) {
-        this.jump();
-    }
+    onTouchStart(event: EventTouch) { this.jump(); }
+    onMouseDown(event: EventMouse) { this.jump(); }
 
     jump() {
         if (this.isGrounded && !this.isDead) {
@@ -47,7 +50,6 @@ export default class PlayerController extends Component {
         if (this.isDead) return;
 
         this.velocity += this.gravity * deltaTime;
-
         const newY = this.node.position.y + this.velocity * deltaTime;
         this.node.setPosition(this.node.position.x, newY, 0);
 
@@ -58,7 +60,5 @@ export default class PlayerController extends Component {
         }
     }
 
-    public die() {
-        this.isDead = true;
-    }
+    public die() { this.isDead = true; }
 }
