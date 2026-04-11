@@ -25,11 +25,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 13
+        "__id__": 10
       }
     ],
     "_prefab": {
-      "__id__": 15
+      "__id__": 12
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -77,7 +77,7 @@
       "__id__": 2
     },
     "asset": {
-      "__uuid__": "3f2bb4cc-aa34-45d7-8f71-45bd61cb858d",
+      "__uuid__": "b344f317-5b2f-4605-8a82-894e375944f8",
       "__expectedType__": "cc.Prefab"
     },
     "fileId": "09LVWjjRBN/Yxoc7bMZscR",
@@ -88,7 +88,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "4fgyaKpYtJLId35CTO3Uoz",
+    "fileId": "67p4y29JxN1r4mwzx9U/xl",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -106,12 +106,6 @@
       },
       {
         "__id__": 9
-      },
-      {
-        "__id__": 10
-      },
-      {
-        "__id__": 11
       }
     ],
     "removedComponents": []
@@ -145,7 +139,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Bandit"
+    "value": "BanditTutorial"
   },
   {
     "__type__": "CCPropertyOverrideInfo",
@@ -179,41 +173,6 @@
     }
   },
   {
-    "__type__": "CCPropertyOverrideInfo",
-    "targetInfo": {
-      "__id__": 6
-    },
-    "propertyPath": [
-      "_lscale"
-    ],
-    "value": {
-      "__type__": "cc.Vec3",
-      "x": -0.7,
-      "y": 0.7,
-      "z": 1
-    }
-  },
-  {
-    "__type__": "CCPropertyOverrideInfo",
-    "targetInfo": {
-      "__id__": 12
-    },
-    "propertyPath": [
-      "_anchorPoint"
-    ],
-    "value": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    }
-  },
-  {
-    "__type__": "cc.TargetInfo",
-    "localID": [
-      "ffHtFjOghBU4ML/Jlw5r4A"
-    ]
-  },
-  {
     "__type__": "360d5PyHt9L+5c0zha6cQic",
     "_name": "",
     "_objFlags": 0,
@@ -223,12 +182,10 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 14
+      "__id__": 11
     },
     "triggerDistance": 300,
-    "bandit": {
-      "__id__": 2
-    },
+    "bandit": null,
     "_id": ""
   },
   {

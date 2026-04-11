@@ -1,8 +1,8 @@
-import { _decorator, Component, Node, Collider2D, Contact2DType, IPhysics2DContact, tween, Vec3, Label, find } from 'cc';
+import { _decorator, Component, Node, Collider2D, Contact2DType, IPhysics2DContact, tween, Vec3, Label, find, Enum } from 'cc';
 const { ccclass, property } = _decorator;
 
 import Spoing from './Spoing';
-
+import AudioManager from './AudioManager';
 @ccclass('Collectable')
 export default class Collectable extends Component {
 
@@ -21,7 +21,7 @@ export default class Collectable extends Component {
     @property
     flyEndScale: number = 0.15;
 
-    @property({ type: require('cc').Enum({ HALF: 180, ONE: 360, TWO: 720 }) })
+    @property({ type: Enum({ HALF: 180, ONE: 360, TWO: 720 }) })
     rotations: number = 360;
 
     private isCollected: boolean = false;
@@ -31,8 +31,8 @@ export default class Collectable extends Component {
     start() {
 
         if (!this.coinUITarget) {
-            this.coinUITarget = find('Canvas/UI/PaypalUI');
-        }
+    this.coinUITarget = find('Canvas/UI/TopBar/PaypalUI');
+}
 
         if (this.coinUITarget) {
             this.coinLabel = this.coinUITarget.getComponentInChildren(Label);
@@ -85,7 +85,7 @@ export default class Collectable extends Component {
     }
 
     onCoinReached() {
-
+        AudioManager.instance?.playCollect();
         const spoing = this.coinUITarget?.getComponent(Spoing)
             ?? this.coinUITarget?.getComponentInChildren(Spoing);
         if (spoing) spoing.play();

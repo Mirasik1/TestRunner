@@ -2,7 +2,7 @@ import { _decorator, Component, Node, Label, find, tween, Vec3, Tween } from 'cc
 const { ccclass, property } = _decorator;
 
 import BackgroundScroller from './BackgroundScroller';
-
+import AudioManager from './AudioManager';
 @ccclass('DeathScreen')
 export default class DeathScreen extends Component {
 
@@ -44,6 +44,8 @@ export default class DeathScreen extends Component {
     }
 
     showFailAnimation() {
+        AudioManager.instance?.playFail();
+        AudioManager.instance?.stopBGMusic();
         if (!this.failUI || !this.failSprite) {
             this.showDeathUI();
             return;

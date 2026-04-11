@@ -1,6 +1,6 @@
 import { _decorator, Component, Node, input, Input, EventTouch, EventMouse, screen, Animation, Color, Sprite } from 'cc';
 const { ccclass, property } = _decorator;
-
+import AudioManager from './AudioManager';
 @ccclass('PlayerController')
 export default class PlayerController extends Component {
 
@@ -73,37 +73,36 @@ export default class PlayerController extends Component {
 
     public jump() {
         if (!this.jumpEnabled) return;
-        // Блокируем прыжок во время damage
         if (this.isDamaged || this.isDead) return;
         if (this.isGrounded) {
             this.velocity = this.jumpForce;
             this.isGrounded = false;
             this.isJumping = true;
             this.playAnim(this.jumpAnim);
+            AudioManager.instance?.playJump(); // ← только здесь
         }
     }
 
     public takeDamage() {
-    if (this.isDead || this.isDamaged) return;
-    this.isDamaged = true;
-    this.isJumping = false;
-    this.velocity = 0;
-    this.isGrounded = true;
+        if (this.isDead || this.isDamaged) return;
+        this.isDamaged = true;
+        this.isJumping = false;
+        this.velocity = 0;
+        this.isGrounded = true;
 
-    // Чистим старые listeners чтобы не накапливались
-    this.animator.off(Animation.EventType.FINISHED);
-
-    this.playAnim(this.damageAnim);
-
-    this.animator.once(Animation.EventType.FINISHED, () => {
-        this.isDamaged = false;
-
+        // Сбрасываем цвет сразу
         const sprite = this.node.getComponent(Sprite);
         if (sprite) sprite.color = new Color(255, 255, 255, 255);
 
-        this.updateAnim();
-    }, this);
-}
+        this.animator.off(Animation.EventType.FINISHED);
+        this.playAnim(this.damageAnim);
+
+        this.animator.once(Animation.EventType.FINISHED, () => {
+            this.isDamaged = false;
+            if (sprite) sprite.color = new Color(255, 255, 255, 255);
+            this.updateAnim();
+        }, this);
+    }
 
     private updateAnim() {
         if (this.isDamaged || this.isDead) return;
@@ -117,11 +116,11 @@ export default class PlayerController extends Component {
     }
 
     public playAnim(name: string) {
-    if (!this.animator) return;
-    // Не перебиваем damage анимацию ничем кроме неё самой
-    if (this.isDamaged && name !== this.damageAnim) return;
-    this.animator.play(name);
-}
+        if (!this.animator) return;
+        // Не перебиваем damage анимацию ничем кроме неё самой
+        if (this.isDamaged && name !== this.damageAnim) return;
+        this.animator.play(name);
+    }
 
     update(deltaTime: number) {
         if (this.isDead) return;

@@ -5,6 +5,7 @@ import HeartUI from './HeartUI';
 import EnemyMarker from './EnemyMarker';
 import DeathScreen from './DeathScreen';
 import BackgroundScroller from './BackgroundScroller';
+import AudioManager from './AudioManager';
 @ccclass('HealthSystem')
 export default class HealthSystem extends Component {
 
@@ -46,6 +47,7 @@ export default class HealthSystem extends Component {
     }
 
     takeDamage() {
+        AudioManager.instance?.playHit();
         if (this.isDamaged || this.isDead) return;
         this.isDamaged = true;
         this.currentHP--;

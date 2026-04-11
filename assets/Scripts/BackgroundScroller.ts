@@ -76,6 +76,11 @@ export default class BackgroundScroller extends Component {
     private finalSpawned: boolean = false;
     private coinLabel: Label = null;
     private finalNodes: Node[] = [];
+    private enemyUnlocked: boolean = false;
+
+    public unlockEnemies() {
+        this.enemyUnlocked = true;
+    }
     private getContainer(): Node {
         return this.spawnContainer || this.node.parent;
     }
@@ -94,7 +99,7 @@ export default class BackgroundScroller extends Component {
         this.nextCoinX = this.spawnEdgeX + 200;
         this.nextEnemyX = this.spawnEdgeX + 800;
 
-        this.coinLabel = find('Canvas/UI/PaypalUI')?.getComponentInChildren(Label);
+        this.coinLabel = find('Canvas/UI/TopBar/PaypalUI')?.getComponentInChildren(Label);
 
         for (let i = 0; i < 1 + this.preloadCount; i++) {
             this.spawnNextBG();
@@ -103,7 +108,7 @@ export default class BackgroundScroller extends Component {
 
     getCurrentScore(): number {
         if (!this.coinLabel) {
-            this.coinLabel = find('Canvas/UI/PaypalUI')?.getComponentInChildren(Label);
+            this.coinLabel = find('Canvas/UI/TopBar/PaypalUI')?.getComponentInChildren(Label);
         }
         if (!this.coinLabel) return 0;
         const raw = this.coinLabel.string.replace('$', '').trim();
@@ -111,20 +116,20 @@ export default class BackgroundScroller extends Component {
     }
 
     spawnNextBG() {
-    const template = this.frameIndex % 2 === 0 ? this.bgTemplate1 : this.bgTemplate2;
-    this.frameIndex++;
+        const template = this.frameIndex % 2 === 0 ? this.bgTemplate1 : this.bgTemplate2;
+        this.frameIndex++;
 
-    const clone = instantiate(template);
-    clone.active = true;
-    this.node.addChild(clone); // ← BG всегда в Background node
+        const clone = instantiate(template);
+        clone.active = true;
+        this.node.addChild(clone); // ← BG всегда в Background node
 
-    const lastX = this.bgNodes.length > 0
-        ? this.bgNodes[this.bgNodes.length - 1].position.x + this.bgWidth
-        : 0;
+        const lastX = this.bgNodes.length > 0
+            ? this.bgNodes[this.bgNodes.length - 1].position.x + this.bgWidth
+            : 0;
 
-    clone.setPosition(lastX, 0, 0);
-    this.bgNodes.push(clone);
-}
+        clone.setPosition(lastX, 0, 0);
+        this.bgNodes.push(clone);
+    }
 
     spawnCoin(x: number) {
 
@@ -153,6 +158,7 @@ export default class BackgroundScroller extends Component {
 
     spawnEnemy(x: number) {
         if (!this.tutorialDone) return;
+        if (!this.enemyUnlocked) return; // ← добавь эту строку
         if (this.enemyPrefabs.length === 0) return;
         if (Math.random() > this.enemySpawnChance) return;
 
@@ -164,65 +170,65 @@ export default class BackgroundScroller extends Component {
     }
 
     spawnFinalLocation() {
-    if (this.finalSpawned || !this.finalLocationPrefab) return;
-    this.finalSpawned = true;
+        if (this.finalSpawned || !this.finalLocationPrefab) return;
+        this.finalSpawned = true;
 
-    const node = instantiate(this.finalLocationPrefab);
-    this.getContainer().addChild(node);
-    node.setPosition(this.spawnEdgeX + 200, 0, 0);
-    this.finalNodes.push(node);
-}
-
-update(deltaTime: number) {
-    const speed = this.scrollSpeed;
-    const halfBG = this.bgWidth / 2;
-
-    // Таймеры двигаем только один раз
-    this.nextCoinX -= speed * deltaTime;
-    this.nextEnemyX -= speed * deltaTime;
-    this.nextTutorialX -= speed * deltaTime;
-
-    if (!this.spawningStopped) {
-        if (this.getCurrentScore() >= this.winScore) {
-            this.spawningStopped = true;
-            const score = this.getCurrentScore();
-            console.log(`Score: ${score} / ${this.winScore} | label: "${this.coinLabel?.string}"`);
-    
-            this.spawnFinalLocation();
-        }
-
-        if (this.nextCoinX <= this.spawnEdgeX) {
-            this.spawnCoin(this.spawnEdgeX);
-            this.nextCoinX = this.spawnEdgeX +
-                this.coinMinDistance + Math.random() * (this.coinMaxDistance - this.coinMinDistance);
-        }
-
-        if (this.nextEnemyX <= this.spawnEdgeX) {
-            this.spawnEnemy(this.spawnEdgeX);
-            this.nextEnemyX = this.spawnEdgeX +
-                this.enemyMinDistance + Math.random() * (this.enemyMaxDistance - this.enemyMinDistance);
-        }
+        const node = instantiate(this.finalLocationPrefab);
+        this.getContainer().addChild(node);
+        node.setPosition(this.spawnEdgeX + 200, 0, 0);
+        this.finalNodes.push(node);
     }
 
-    for (let i = this.bgNodes.length - 1; i >= 0; i--) {
-        const bg = this.bgNodes[i];
-        const newX = bg.position.x - speed * deltaTime;
-        bg.setPosition(newX, 0, 0);
-        if (newX + this.bgWidth < -halfBG) {
-            bg.destroy();
-            this.bgNodes.splice(i, 1);
+    update(deltaTime: number) {
+        const speed = this.scrollSpeed;
+        const halfBG = this.bgWidth / 2;
+
+        // Таймеры двигаем только один раз
+        this.nextCoinX -= speed * deltaTime;
+        this.nextEnemyX -= speed * deltaTime;
+        this.nextTutorialX -= speed * deltaTime;
+
+        if (!this.spawningStopped) {
+            if (this.getCurrentScore() >= this.winScore) {
+                this.spawningStopped = true;
+                const score = this.getCurrentScore();
+                console.log(`Score: ${score} / ${this.winScore} | label: "${this.coinLabel?.string}"`);
+
+                this.spawnFinalLocation();
+            }
+
+            if (this.nextCoinX <= this.spawnEdgeX) {
+                this.spawnCoin(this.spawnEdgeX);
+                this.nextCoinX = this.spawnEdgeX +
+                    this.coinMinDistance + Math.random() * (this.coinMaxDistance - this.coinMinDistance);
+            }
+
+            if (this.nextEnemyX <= this.spawnEdgeX) {
+                this.spawnEnemy(this.spawnEdgeX);
+                this.nextEnemyX = this.spawnEdgeX +
+                    this.enemyMinDistance + Math.random() * (this.enemyMaxDistance - this.enemyMinDistance);
+            }
+        }
+
+        for (let i = this.bgNodes.length - 1; i >= 0; i--) {
+            const bg = this.bgNodes[i];
+            const newX = bg.position.x - speed * deltaTime;
+            bg.setPosition(newX, 0, 0);
+            if (newX + this.bgWidth < -halfBG) {
+                bg.destroy();
+                this.bgNodes.splice(i, 1);
+            }
+        }
+
+        this.moveAndClean(this.coinNodes, speed, deltaTime);
+        this.moveAndClean(this.enemyNodes, speed, deltaTime);
+        this.moveAndClean(this.finalNodes, speed, deltaTime);
+
+        const last = this.bgNodes[this.bgNodes.length - 1];
+        if (last && last.position.x < this.bgWidth * this.preloadCount) {
+            this.spawnNextBG();
         }
     }
-
-    this.moveAndClean(this.coinNodes, speed, deltaTime);
-    this.moveAndClean(this.enemyNodes, speed, deltaTime);
-    this.moveAndClean(this.finalNodes, speed, deltaTime);
-
-    const last = this.bgNodes[this.bgNodes.length - 1];
-    if (last && last.position.x < this.bgWidth * this.preloadCount) {
-        this.spawnNextBG();
-    }
-}
 
     moveAndClean(arr: Node[], speed: number, dt: number) {
         for (let i = arr.length - 1; i >= 0; i--) {

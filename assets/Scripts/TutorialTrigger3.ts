@@ -76,14 +76,13 @@ export default class TutorialTrigger3 extends Component {
             .call(() => {
                 this.readyUI.active = false;
 
-
                 const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
-                if (scroller) scroller.setSpeed(700);
-
-
-                if (this.banditAnim) {
-                    this.banditAnim.resume();
+                if (scroller) {
+                    scroller.setSpeed(700);
+                    scroller.unlockEnemies(); // ← добавь
                 }
+
+                if (this.banditAnim) this.banditAnim.resume();
 
                 const controller = this.playerNode?.getComponent(PlayerController);
                 if (controller) {

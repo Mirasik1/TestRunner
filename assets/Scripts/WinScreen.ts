@@ -2,7 +2,7 @@ import { _decorator, Component, Node, tween, Vec3, Label, find, ParticleSystem2D
 const { ccclass, property } = _decorator;
 
 import BackgroundScroller from './BackgroundScroller';
-
+import AudioManager from './AudioManager';
 @ccclass('WinScreen')
 export default class WinScreen extends Component {
 
@@ -48,6 +48,8 @@ export default class WinScreen extends Component {
     }
 
     startConfetti() {
+        AudioManager.instance?.playConfetti();
+        AudioManager.instance?.stopBGMusic();
         this.background.active = true;
         if (this.confettiLeft) {
             this.confettiLeft.active = true;
