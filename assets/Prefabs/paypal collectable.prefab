@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "dollar",
+    "_name": "paypal collectable",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "dollar",
+    "_name": "paypal collectable",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -41,8 +41,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 159.869,
-      "y": -253.897,
+      "x": 1958.532,
+      "y": 109.808,
       "z": 0
     },
     "_lrot": {
@@ -82,19 +82,19 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 769,
-      "height": 439
+      "width": 806,
+      "height": 551
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
       "x": 0.5,
-      "y": 0
+      "y": 0.5
     },
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "c17gyhNFBHLK5MLY0EMf8x"
+    "fileId": "c3gAJySdRAgaROxfCdteso"
   },
   {
     "__type__": "cc.Sprite",
@@ -119,7 +119,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "d3705656-3edd-4d13-9917-b4752783033a@f9941",
+      "__uuid__": "3cd1f2fd-6eea-4da7-b2c4-d07f92413823@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -139,7 +139,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "10/5Na8vlGGqxsJBDPnt6V"
+    "fileId": "47BbGxMLpIjJ+CNMWaWiWN"
   },
   {
     "__type__": "8821aANeLtD5bCQoaVt61Gk",
@@ -154,7 +154,7 @@
       "__id__": 7
     },
     "coinUITarget": null,
-    "value": 20,
+    "value": 30,
     "flyDuration": 0.2,
     "flyStartScale": 0.1,
     "flyEndScale": 0.02,
@@ -163,41 +163,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "03rvAJV7VNHIY40hmwP0ee"
-  },
-  {
-    "__type__": "cc.BoxCollider2D",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "__prefab": {
-      "__id__": 9
-    },
-    "tag": 0,
-    "_group": 1,
-    "_density": 1,
-    "_sensor": true,
-    "_friction": 0,
-    "_restitution": 0,
-    "_offset": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 219.5
-    },
-    "_size": {
-      "__type__": "cc.Size",
-      "width": 1200,
-      "height": 600
-    },
-    "_id": ""
-  },
-  {
-    "__type__": "cc.CompPrefabInfo",
-    "fileId": "37RLTkZX9JBIdep2mWzyIa"
+    "fileId": "600y7PWohGpIvsHnIrz+1w"
   },
   {
     "__type__": "cc.RigidBody2D",
@@ -209,7 +175,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 11
+      "__id__": 9
     },
     "enabledContactListener": true,
     "bullet": false,
@@ -231,7 +197,41 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "cb4bfSUHdEg7/x+FwfzOV0"
+    "fileId": "6fizSwrrpB0ZIhvbXY1Ebs"
+  },
+  {
+    "__type__": "cc.BoxCollider2D",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 11
+    },
+    "tag": 0,
+    "_group": 1,
+    "_density": 1,
+    "_sensor": true,
+    "_friction": 0.2,
+    "_restitution": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_size": {
+      "__type__": "cc.Size",
+      "width": 1000,
+      "height": 700
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "37vw7nOspBsrk4/4X9TLX/"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -241,7 +241,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "606Y9sFVdAEIBfYAnPb6CD",
+    "fileId": "8bqtDswclMoKMLo348vyB2",
     "instance": null,
     "targetOverrides": null
   }

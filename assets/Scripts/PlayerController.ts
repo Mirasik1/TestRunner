@@ -31,7 +31,12 @@ export default class PlayerController extends Component {
     private isDead: boolean = false;
     private isRunning: boolean = false;
     private isDamaged: boolean = false;
-    private isJumping: boolean = false; // ← новый флаг
+    private isJumping: boolean = false;
+    private jumpEnabled: boolean = true;
+
+    public setJumpEnabled(enabled: boolean) {
+        this.jumpEnabled = enabled;
+    }
 
     start() {
         this.groundY = this.node.position.y;
@@ -67,7 +72,8 @@ export default class PlayerController extends Component {
         }
     }
 
-    jump() {
+    public jump() {
+        if (!this.jumpEnabled) return;
         if (this.isGrounded && !this.isDead && !this.isDamaged) {
             this.velocity = this.jumpForce;
             this.isGrounded = false;
@@ -90,7 +96,6 @@ export default class PlayerController extends Component {
     private updateAnim() {
         if (this.isDamaged || this.isDead) return;
 
-        // Не трогаем анимацию пока летим
         if (this.isJumping) return;
 
         if (this.isRunning) {
@@ -100,7 +105,7 @@ export default class PlayerController extends Component {
         }
     }
 
-    private playAnim(name: string) {
+    public playAnim(name: string) {
         if (!this.animator) return;
         this.animator.play(name);
     }
@@ -117,7 +122,7 @@ export default class PlayerController extends Component {
 
             if (!this.isGrounded) {
                 this.isGrounded = true;
-                this.isJumping = false; // ← сбрасываем только при приземлении
+                this.isJumping = false;
                 this.velocity = 0;
                 this.updateAnim();
             }

@@ -8,11 +8,10 @@ export default class CoinUI extends Component {
     coinLabel: Label = null;
 
     @property(Node)
-    iconNode: Node = null; // иконка монеты для анимации пружинки
+    iconNode: Node = null;
 
     private coins: number = 0;
 
-    // Статический инстанс для удобного доступа из Collectable
     static instance: CoinUI = null;
 
     onLoad() {

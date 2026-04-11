@@ -16,7 +16,7 @@ export default class CameraController extends Component {
     private fixedY: number = 0;
 
     start() {
-        // Запоминаем Y камеры один раз при старте — больше не меняем
+
         this.fixedY = this.node.position.y;
     }
 
