@@ -53,7 +53,8 @@ export default class BackgroundScroller extends Component {
     winScore: number = 600;
     @property
     tutorialDistance: number = 300;
-
+    @property(Node)
+    spawnContainer: Node = null;
     private nextTutorialX: number = 0;
 
     private bgNodes: Node[] = [];
@@ -74,7 +75,10 @@ export default class BackgroundScroller extends Component {
     private spawningStopped: boolean = false;
     private finalSpawned: boolean = false;
     private coinLabel: Label = null;
-
+    private finalNodes: Node[] = [];
+    private getContainer(): Node {
+        return this.spawnContainer || this.node.parent;
+    }
     start() {
         const screenSize = view.getVisibleSize();
         const ui = this.bgTemplate1.getComponent(UITransform);
@@ -107,29 +111,30 @@ export default class BackgroundScroller extends Component {
     }
 
     spawnNextBG() {
-        const template = this.frameIndex % 2 === 0 ? this.bgTemplate1 : this.bgTemplate2;
-        this.frameIndex++;
+    const template = this.frameIndex % 2 === 0 ? this.bgTemplate1 : this.bgTemplate2;
+    this.frameIndex++;
 
-        const clone = instantiate(template);
-        clone.active = true;
-        this.node.addChild(clone);
+    const clone = instantiate(template);
+    clone.active = true;
+    this.node.addChild(clone); // ← BG всегда в Background node
 
-        const lastX = this.bgNodes.length > 0
-            ? this.bgNodes[this.bgNodes.length - 1].position.x + this.bgWidth
-            : 0;
+    const lastX = this.bgNodes.length > 0
+        ? this.bgNodes[this.bgNodes.length - 1].position.x + this.bgWidth
+        : 0;
 
-        clone.setPosition(lastX, 0, 0);
-        this.bgNodes.push(clone);
-    }
+    clone.setPosition(lastX, 0, 0);
+    this.bgNodes.push(clone);
+}
 
     spawnCoin(x: number) {
+
         if (!this.tutorialDone) {
             if (this.tutorialPrefabs.length === 0) return;
             if (this.nextTutorialX > this.spawnEdgeX) return; // ждём дистанцию
 
             const idx = Math.min(this.tutorialSpawned, this.tutorialPrefabs.length - 1);
             const node = instantiate(this.tutorialPrefabs[idx]);
-            this.node.parent.addChild(node);
+            this.getContainer().addChild(node);
             node.setPosition(x, this.coinY, 0);
             this.coinNodes.push(node);
             this.tutorialSpawned++;
@@ -141,7 +146,7 @@ export default class BackgroundScroller extends Component {
         if (this.coinPrefabs.length === 0) return;
         const idx = Math.floor(Math.random() * this.coinPrefabs.length);
         const node = instantiate(this.coinPrefabs[idx]);
-        this.node.parent.addChild(node);
+        this.getContainer().addChild(node);
         node.setPosition(x, this.coinY, 0);
         this.coinNodes.push(node);
     }
@@ -153,29 +158,39 @@ export default class BackgroundScroller extends Component {
 
         const idx = Math.floor(Math.random() * this.enemyPrefabs.length);
         const node = instantiate(this.enemyPrefabs[idx]);
-        this.node.parent.addChild(node);
+        this.getContainer().addChild(node);
         node.setPosition(x, this.enemyY, 0);
         this.enemyNodes.push(node);
     }
 
     spawnFinalLocation() {
-        if (this.finalSpawned || !this.finalLocationPrefab) return;
-        this.finalSpawned = true;
-        const node = instantiate(this.finalLocationPrefab);
-        this.node.parent.addChild(node);
-        node.setPosition(this.spawnEdgeX + 500, 0, 0);
-    }
+    if (this.finalSpawned || !this.finalLocationPrefab) return;
+    this.finalSpawned = true;
 
-    update(deltaTime: number) {
+    const node = instantiate(this.finalLocationPrefab);
+    this.getContainer().addChild(node);
+    node.setPosition(this.spawnEdgeX + 200, 0, 0);
+    this.finalNodes.push(node);
+}
+
+update(deltaTime: number) {
     const speed = this.scrollSpeed;
     const halfBG = this.bgWidth / 2;
 
-    // Двигаем таймеры — только один раз каждый
+    // Таймеры двигаем только один раз
     this.nextCoinX -= speed * deltaTime;
     this.nextEnemyX -= speed * deltaTime;
     this.nextTutorialX -= speed * deltaTime;
 
     if (!this.spawningStopped) {
+        if (this.getCurrentScore() >= this.winScore) {
+            this.spawningStopped = true;
+            const score = this.getCurrentScore();
+            console.log(`Score: ${score} / ${this.winScore} | label: "${this.coinLabel?.string}"`);
+    
+            this.spawnFinalLocation();
+        }
+
         if (this.nextCoinX <= this.spawnEdgeX) {
             this.spawnCoin(this.spawnEdgeX);
             this.nextCoinX = this.spawnEdgeX +
@@ -201,6 +216,7 @@ export default class BackgroundScroller extends Component {
 
     this.moveAndClean(this.coinNodes, speed, deltaTime);
     this.moveAndClean(this.enemyNodes, speed, deltaTime);
+    this.moveAndClean(this.finalNodes, speed, deltaTime);
 
     const last = this.bgNodes[this.bgNodes.length - 1];
     if (last && last.position.x < this.bgWidth * this.preloadCount) {

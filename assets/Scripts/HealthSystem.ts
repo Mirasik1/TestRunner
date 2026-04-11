@@ -80,13 +80,8 @@ export default class HealthSystem extends Component {
     }
 
     onDeath() {
-    // Останавливаем фон
-    const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
-    if (scroller) scroller.setSpeed(0);
-
-    // Показываем экран смерти
     DeathScreen.instance?.show();
-    }
+}
 
     public getCurrentHP(): number { return this.currentHP; }
     public getIsDead(): boolean { return this.isDead; }
