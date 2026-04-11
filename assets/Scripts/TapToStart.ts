@@ -25,22 +25,30 @@ export default class TapToStart extends Component {
 
     private isWaiting: boolean = false;
     private onComplete: (() => void) | null = null;
+    private playerNode: Node = null;
 
     static instance: TapToStart = null;
 
     onLoad() {
-        TapToStart.instance = this;
+    TapToStart.instance = this;
+    this.playerNode = find('Canvas/Player'); // ← добавь это
 
-        if (!this.isTutorialMode) {
+    if (!this.isTutorialMode) {
+        // Сразу запрещаем прыжок
+        const controller = this.playerNode?.getComponent(PlayerController);
+        if (controller) controller.setJumpEnabled(false);
 
-            this.show('Tap To Start Earning', () => {
-                this.startGame();
-            });
-        } else {
+        const bg = find('Canvas/Background');
+        const scroller = bg?.getComponent(BackgroundScroller);
+        if (scroller) scroller.setSpeed(0);
 
-            this.tapUI.active = false;
-        }
+        this.show('Tap To Start Earning', () => {
+            this.startGame();
+        });
+    } else {
+        this.tapUI.active = false;
     }
+}
 
     public show(text: string, callback: () => void) {
         this.onComplete = callback;
@@ -74,19 +82,22 @@ export default class TapToStart extends Component {
                     this.onComplete();
                     this.onComplete = null;
                 }
+                const player = find('Canvas/Player');
+                const controller = player?.getComponent(PlayerController);
+                controller.setJumpEnabled(true)
             })
             .start();
     }
 
     startGame() {
+    const bg = find('Canvas/Background');
+    const scroller = bg?.getComponent(BackgroundScroller);
+    if (scroller) scroller.setSpeed(700);
 
-        const bg = find('Canvas/Background');
-        const scroller = bg?.getComponent(BackgroundScroller);
-        if (scroller) scroller.setSpeed(700);
-
-
-        const player = find('Canvas/Player');
-        const controller = player?.getComponent(PlayerController);
-        if (controller) controller.startRunning();
+    const controller = this.playerNode?.getComponent(PlayerController);
+    if (controller) {
+        controller.setJumpEnabled(true);
+        controller.startRunning();
     }
+}
 }

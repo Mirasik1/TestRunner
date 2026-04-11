@@ -27,7 +27,7 @@ export default class TutorialTrigger3 extends Component {
         }
 
         const controller = this.playerNode?.getComponent(PlayerController);
-        
+
         if (controller) controller.setJumpEnabled(false);
     }
 
@@ -68,7 +68,7 @@ export default class TutorialTrigger3 extends Component {
     onTap() {
         input.off(Input.EventType.TOUCH_START, this.onTap, this);
         input.off(Input.EventType.MOUSE_DOWN, this.onTap, this);
-        
+
         if (!this.readyUI) return;
 
         tween(this.readyUI)
@@ -86,8 +86,11 @@ export default class TutorialTrigger3 extends Component {
                 }
 
                 const controller = this.playerNode?.getComponent(PlayerController);
-                controller.jump()
-                if (controller) controller.setJumpEnabled(true);
+                if (controller) {
+                    controller.setJumpEnabled(true);
+                    controller.startRunning();
+                    controller.jump();
+                }
             })
             .start();
     }

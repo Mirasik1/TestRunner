@@ -25,11 +25,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 11
+        "__id__": 13
       }
     ],
     "_prefab": {
-      "__id__": 13
+      "__id__": 15
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -109,6 +109,9 @@
       },
       {
         "__id__": 10
+      },
+      {
+        "__id__": 11
       }
     ],
     "removedComponents": []
@@ -124,7 +127,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": -47,
       "z": 0
     }
   },
@@ -191,6 +194,26 @@
     }
   },
   {
+    "__type__": "CCPropertyOverrideInfo",
+    "targetInfo": {
+      "__id__": 12
+    },
+    "propertyPath": [
+      "_anchorPoint"
+    ],
+    "value": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    }
+  },
+  {
+    "__type__": "cc.TargetInfo",
+    "localID": [
+      "ffHtFjOghBU4ML/Jlw5r4A"
+    ]
+  },
+  {
     "__type__": "360d5PyHt9L+5c0zha6cQic",
     "_name": "",
     "_objFlags": 0,
@@ -200,9 +223,9 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 12
+      "__id__": 14
     },
-    "triggerDistance": 250,
+    "triggerDistance": 300,
     "bandit": {
       "__id__": 2
     },
