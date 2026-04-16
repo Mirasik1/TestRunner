@@ -21,18 +21,18 @@ export default class HeartUI extends Component {
     }
 
     public setHP(hp: number) {
-        this.heart3.active      = false;
-        this.heart2.active      = false;
-        this.heart1.active      = false;
+        this.heart3.active = false;
+        this.heart2.active = false;
+        this.heart1.active = false;
         this.heart3empty.active = false;
 
         if (hp >= 3) {
             this.heart3.active = true;
         } else if (hp === 2) {
-            this.heart2.active      = true;
+            this.heart2.active = true;
             this.heart3empty.active = true;
         } else if (hp === 1) {
-            this.heart1.active      = true;
+            this.heart1.active = true;
             this.heart3empty.active = true;
         } else {
             this.heart3empty.active = true;

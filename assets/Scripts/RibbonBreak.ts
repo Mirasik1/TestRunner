@@ -39,34 +39,34 @@ export default class RibbonBreak extends Component {
     }
 
     breakRibbon() {
-    if (this.broken) return;
-    this.broken = true;
+        if (this.broken) return;
+        this.broken = true;
 
-    const player = find('Canvas/Player');
-    const controller = player?.getComponent(PlayerController);
-    if (controller) controller.setJumpEnabled(false);
+        const player = find('Canvas/Player');
+        const controller = player?.getComponent(PlayerController);
+        if (controller) controller.setJumpEnabled(false);
 
-    // 🟥 Левая часть (крутится вокруг левого края)
-    if (this.leftPart) {
-        tween(this.leftPart)
-            .to(this.fallDuration, {
-                angle: -80 // вправо
-            }, { easing: 'cubicIn' })
-            .start();
+        // 🟥 Левая часть (крутится вокруг левого края)
+        if (this.leftPart) {
+            tween(this.leftPart)
+                .to(this.fallDuration, {
+                    angle: -80 // вправо
+                }, { easing: 'cubicIn' })
+                .start();
+        }
+
+        // 🟦 Правая часть (крутится вокруг правого края)
+        if (this.rightPart) {
+            tween(this.rightPart)
+                .to(this.fallDuration, {
+                    angle: 80 // влево
+                }, { easing: 'cubicIn' })
+                .call(() => {
+                    WinScreen.instance?.show();
+                })
+                .start();
+        }
     }
-
-    // 🟦 Правая часть (крутится вокруг правого края)
-    if (this.rightPart) {
-        tween(this.rightPart)
-            .to(this.fallDuration, {
-                angle: 80 // влево
-            }, { easing: 'cubicIn' })
-            .call(() => {
-                WinScreen.instance?.show();
-            })
-            .start();
-    }
-}
 
 
     public triggerBreak() {

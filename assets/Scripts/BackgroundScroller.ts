@@ -102,10 +102,10 @@ export default class BackgroundScroller extends Component {
         if (this.appStoreUrl) {
             playable.set_app_store_url(this.appStoreUrl);
         }
-        // Правый край экрана + запас
+
         this.spawnEdgeX = screenSize.width / 2 + 300;
         this.nextTutorialX = this.spawnEdgeX + 400;
-        // Первые спавны — чуть дальше правого края
+
         this.nextCoinX = this.spawnEdgeX + 200;
         this.nextEnemyX = this.spawnEdgeX + 800;
 

@@ -82,8 +82,8 @@ export default class HealthSystem extends Component {
     }
 
     onDeath() {
-    DeathScreen.instance?.show();
-}
+        DeathScreen.instance?.show();
+    }
 
     public getCurrentHP(): number { return this.currentHP; }
     public getIsDead(): boolean { return this.isDead; }

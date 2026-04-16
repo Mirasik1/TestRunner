@@ -36,7 +36,6 @@ export default class AudioManager extends Component {
     onLoad() {
         AudioManager.instance = this;
 
-        // Два AudioSource — один для музыки, один для sfx
         const sources = this.getComponents(AudioSource);
         this.bgSource = sources[0];
         this.sfxSource = sources[1];
@@ -58,13 +57,13 @@ export default class AudioManager extends Component {
         this.sfxSource.playOneShot(clip, this.sfxVolume);
     }
 
-    public playJump()     { this.playSFX(this.jumpSound); }
-    public playHit()      { this.playSFX(this.hitSound); }
-    public playCollect()  { this.playSFX(this.collectSound); }
-    public playFail()     { this.playSFX(this.failSound); }
+    public playJump() { this.playSFX(this.jumpSound); }
+    public playHit() { this.playSFX(this.hitSound); }
+    public playCollect() { this.playSFX(this.collectSound); }
+    public playFail() { this.playSFX(this.failSound); }
     public playConfetti() { this.playSFX(this.confettiSound); }
 
-    public stopBGMusic()  { this.bgSource?.stop(); }
+    public stopBGMusic() { this.bgSource?.stop(); }
     public pauseBGMusic() { this.bgSource?.pause(); }
-    public resumeBGMusic(){ this.bgSource?.play(); }
+    public resumeBGMusic() { this.bgSource?.play(); }
 }

@@ -69,9 +69,9 @@ export default class Spoing extends Component {
     }
     public forcePlay() {
 
-    this.originalScale = this.node.scale.clone();
+        this.originalScale = this.node.scale.clone();
 
-    this.isPlaying = false;
-    this.play();
-}
+        this.isPlaying = false;
+        this.play();
+    }
 }

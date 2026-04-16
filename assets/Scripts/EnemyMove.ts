@@ -5,12 +5,12 @@ const { ccclass, property } = _decorator;
 export class EnemyMove extends Component {
 
     @property
-    speed: number = 200; // скорость (пиксели в секунду)
+    speed: number = 200;
 
     update(deltaTime: number) {
         const pos = this.node.position;
 
-        // движение в -X
+
         this.node.setPosition(
             pos.x - this.speed * deltaTime,
             pos.y,

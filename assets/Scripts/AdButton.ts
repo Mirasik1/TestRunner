@@ -1,23 +1,24 @@
-import { _decorator, Component } from 'cc';
-const { ccclass } = _decorator;
+import { _decorator, Component, Node, tween, Vec3 } from 'cc';
+const { ccclass, property } = _decorator;
 
 import playable from './super_html_playable';
 
 @ccclass('AdButton')
 export default class PlayableButtons extends Component {
 
-    // 🎮 просто старт (без ссылок)
+    @property(Node)
+    ctaPanel: Node = null;
+
     onStartClick() {
         console.log("Game Start");
     }
 
-    // ⬇️ Кнопка DOWNLOAD
     onDownloadClick() {
-        playable.download();
+        console.log("Download");
     }
 
-    // 🏁 Кнопка END / FINISH
     onEndClick() {
         playable.game_end();
     }
+
 }

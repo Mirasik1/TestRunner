@@ -22,7 +22,7 @@ export default class Collectable extends Component {
 
     @property
     flyEndScale: number = 0.15;
-    
+
 
     @property({ type: Enum({ HALF: 180, ONE: 360, TWO: 720 }) })
     rotations: number = 360;
@@ -90,5 +90,5 @@ export default class Collectable extends Component {
         GameManager.instance?.addScore(this.value);
         GameManager.instance?.showPopupText();
     }
-    
+
 }

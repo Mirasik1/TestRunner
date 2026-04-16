@@ -17,10 +17,8 @@ export default class FinishTrigger extends Component {
         if (this.triggered) return;
         if (other.node.name !== 'Player') return;
         this.triggered = true;
-        this.onFinish();
+
     }
 
-    onFinish() {
-        // победный экран — добавим позже
-    }
+
 }
