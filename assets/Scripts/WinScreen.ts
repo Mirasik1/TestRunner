@@ -3,6 +3,7 @@ const { ccclass, property } = _decorator;
 
 import BackgroundScroller from './BackgroundScroller';
 import AudioManager from './AudioManager';
+import GameManager from './GameManager';
 @ccclass('WinScreen')
 export default class WinScreen extends Component {
 
@@ -25,6 +26,8 @@ export default class WinScreen extends Component {
 
     static instance: WinScreen = null;
 
+
+
     onLoad() {
         WinScreen.instance = this;
         if (this.winUI) this.winUI.active = false;
@@ -34,14 +37,11 @@ export default class WinScreen extends Component {
     }
 
     public show() {
-        // Останавливаем фон
         const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
         if (scroller) scroller.setSpeed(0);
 
-        // Берём счёт
-        const paypalLabel = find('Canvas/UI/PaypalUI')?.getComponentInChildren(Label);
-        if (paypalLabel && this.scoreLabel) {
-            this.scoreLabel.string = paypalLabel.string;
+        if (this.scoreLabel) {
+            this.scoreLabel.string = '$' + (GameManager.instance?.getScore() ?? 0);
         }
 
         this.startConfetti();

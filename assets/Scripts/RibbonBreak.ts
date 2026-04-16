@@ -39,35 +39,35 @@ export default class RibbonBreak extends Component {
     }
 
     breakRibbon() {
-        if (this.broken) return;
-        this.broken = true;
+    if (this.broken) return;
+    this.broken = true;
 
-        const player = find('Canvas/Player');
-        const controller = player?.getComponent(PlayerController);
-        if (controller) controller.setJumpEnabled(false);
+    const player = find('Canvas/Player');
+    const controller = player?.getComponent(PlayerController);
+    if (controller) controller.setJumpEnabled(false);
 
-        if (this.rightPart) {
-            const startPos = this.rightPart.position.clone();
-            const startAngle = this.rightPart.angle;
-
-            tween(this.rightPart)
-                .to(this.fallDuration * 0.3, {
-                    position: new Vec3(startPos.x + 30, startPos.y + 20, 0),
-                    angle: startAngle + 10
-                }, { easing: 'sineOut' })
-                .to(this.fallDuration * 0.7, {
-                    position: new Vec3(startPos.x + 60, startPos.y - this.fallDistance, 0),
-                    angle: startAngle + this.rotationAngle
-                }, { easing: 'cubicIn' })
-                .call(() => {
-                    if (this.rightPart) this.rightPart.active = false;
-                    WinScreen.instance?.show();
-                })
-                .start();
-        } else {
-            WinScreen.instance?.show();
-        }
+    // 🟥 Левая часть (крутится вокруг левого края)
+    if (this.leftPart) {
+        tween(this.leftPart)
+            .to(this.fallDuration, {
+                angle: -80 // вправо
+            }, { easing: 'cubicIn' })
+            .start();
     }
+
+    // 🟦 Правая часть (крутится вокруг правого края)
+    if (this.rightPart) {
+        tween(this.rightPart)
+            .to(this.fallDuration, {
+                angle: 80 // влево
+            }, { easing: 'cubicIn' })
+            .call(() => {
+                WinScreen.instance?.show();
+            })
+            .start();
+    }
+}
+
 
     public triggerBreak() {
         this.breakRibbon();

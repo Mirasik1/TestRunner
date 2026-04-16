@@ -55,7 +55,8 @@ export default class TutorialTrigger3 extends Component {
 
         this.readyUI.active = true;
         this.readyUI.setScale(0, 0, 1);
-
+        const controller = this.playerNode?.getComponent(PlayerController);
+        controller.setJumpEnabled(false);
         tween(this.readyUI)
             .to(0.3, { scale: new Vec3(1, 1, 1) }, { easing: 'backOut' })
             .call(() => {

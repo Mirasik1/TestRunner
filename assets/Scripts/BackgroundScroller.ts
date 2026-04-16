@@ -1,6 +1,7 @@
-import { _decorator, Component, Node, UITransform, view, instantiate, Prefab, Label, find } from 'cc';
+import { _decorator, Component, Node, UITransform, view, instantiate, Prefab, find } from 'cc';
 const { ccclass, property } = _decorator;
 
+import GameManager from './GameManager';
 @ccclass('BackgroundScroller')
 export default class BackgroundScroller extends Component {
 
@@ -64,7 +65,6 @@ export default class BackgroundScroller extends Component {
     private bgWidth: number = 0;
     private frameIndex: number = 0;
 
-    // Порог за правым краем экрана — когда объект пересекает его, спавним
     private spawnEdgeX: number = 0;
     private nextCoinX: number = 0;
     private nextEnemyX: number = 0;
@@ -74,7 +74,7 @@ export default class BackgroundScroller extends Component {
 
     private spawningStopped: boolean = false;
     private finalSpawned: boolean = false;
-    private coinLabel: Label = null;
+
     private finalNodes: Node[] = [];
     private enemyUnlocked: boolean = false;
 
@@ -99,7 +99,6 @@ export default class BackgroundScroller extends Component {
         this.nextCoinX = this.spawnEdgeX + 200;
         this.nextEnemyX = this.spawnEdgeX + 800;
 
-        this.coinLabel = find('Canvas/UI/TopBar/PaypalUI')?.getComponentInChildren(Label);
 
         for (let i = 0; i < 1 + this.preloadCount; i++) {
             this.spawnNextBG();
@@ -107,12 +106,7 @@ export default class BackgroundScroller extends Component {
     }
 
     getCurrentScore(): number {
-        if (!this.coinLabel) {
-            this.coinLabel = find('Canvas/UI/TopBar/PaypalUI')?.getComponentInChildren(Label);
-        }
-        if (!this.coinLabel) return 0;
-        const raw = this.coinLabel.string.replace('$', '').trim();
-        return parseInt(raw) || 0;
+        return GameManager.instance?.getScore() ?? 0;
     }
 
     spawnNextBG() {
@@ -191,9 +185,7 @@ export default class BackgroundScroller extends Component {
         if (!this.spawningStopped) {
             if (this.getCurrentScore() >= this.winScore) {
                 this.spawningStopped = true;
-                const score = this.getCurrentScore();
-                console.log(`Score: ${score} / ${this.winScore} | label: "${this.coinLabel?.string}"`);
-
+                
                 this.spawnFinalLocation();
             }
 

@@ -3,6 +3,7 @@ const { ccclass, property } = _decorator;
 
 import Spoing from './Spoing';
 import AudioManager from './AudioManager';
+import GameManager from './GameManager';
 @ccclass('Collectable')
 export default class Collectable extends Component {
 
@@ -25,19 +26,10 @@ export default class Collectable extends Component {
     rotations: number = 360;
 
     private isCollected: boolean = false;
-    private static totalCoins: number = 0;
-    private coinLabel: Label = null;
+
+
 
     start() {
-
-        if (!this.coinUITarget) {
-    this.coinUITarget = find('Canvas/UI/TopBar/PaypalUI');
-}
-
-        if (this.coinUITarget) {
-            this.coinLabel = this.coinUITarget.getComponentInChildren(Label);
-        }
-
         const collider = this.getComponent(Collider2D);
         if (collider) {
             collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
@@ -61,13 +53,15 @@ export default class Collectable extends Component {
     }
 
     playCollectAnimation() {
-        if (!this.coinUITarget) {
+        const target = GameManager.instance?.coinUITarget;
+
+        if (!target) {
             this.onCoinReached();
             this.node.destroy();
             return;
         }
 
-        const targetWorldPos = this.coinUITarget.worldPosition.clone();
+        const targetWorldPos = target.worldPosition.clone();
         const startAngle = this.node.angle;
 
         tween(this.node)
@@ -86,13 +80,11 @@ export default class Collectable extends Component {
 
     onCoinReached() {
         AudioManager.instance?.playCollect();
-        const spoing = this.coinUITarget?.getComponent(Spoing)
-            ?? this.coinUITarget?.getComponentInChildren(Spoing);
+
+        const target = GameManager.instance?.coinUITarget;
+        const spoing = target?.getComponent(Spoing) ?? target?.getComponentInChildren(Spoing);
         if (spoing) spoing.play();
 
-        Collectable.totalCoins += this.value;
-        if (this.coinLabel) {
-            this.coinLabel.string = `$${Collectable.totalCoins}`;
-        }
+        GameManager.instance?.addScore(this.value);
     }
 }

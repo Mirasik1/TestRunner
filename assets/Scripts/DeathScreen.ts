@@ -3,6 +3,7 @@ const { ccclass, property } = _decorator;
 
 import BackgroundScroller from './BackgroundScroller';
 import AudioManager from './AudioManager';
+import GameManager from './GameManager';
 @ccclass('DeathScreen')
 export default class DeathScreen extends Component {
 
@@ -25,20 +26,15 @@ export default class DeathScreen extends Component {
 
     onLoad() {
         DeathScreen.instance = this;
+        console.log('[DeathScreen] висит на ноде:', this.node.name, '| путь:', this.node.getPathInHierarchy());
         if (this.failUI) this.failUI.active = false;
         if (this.deathUI) this.deathUI.active = false;
     }
 
     public show() {
-        // Останавливаем фон
         const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
         if (scroller) scroller.setSpeed(0);
 
-        // Берём счёт
-        const paypalLabel = find('Canvas/UI/PaypalUI')?.getComponentInChildren(Label);
-        if (paypalLabel && this.scoreLabel) {
-            this.scoreLabel.string = paypalLabel.string;
-        }
 
         this.showFailAnimation();
     }
@@ -75,8 +71,13 @@ export default class DeathScreen extends Component {
             .start();
     }
 
+
     showDeathUI() {
         if (!this.deathUI) return;
+
+        if (this.scoreLabel) {
+            this.scoreLabel.string = '$' + (GameManager.instance?.getScore() ?? 0);
+        }
 
         this.deathUI.active = true;
         this.deathUI.setScale(0, 0, 1);
