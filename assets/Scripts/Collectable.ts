@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, Collider2D, Contact2DType, IPhysics2DContact, tween, Vec3, Label, find, Enum } from 'cc';
+import { instantiate, UITransform, view } from 'cc';
 const { ccclass, property } = _decorator;
 
 import Spoing from './Spoing';
@@ -21,6 +22,7 @@ export default class Collectable extends Component {
 
     @property
     flyEndScale: number = 0.15;
+    
 
     @property({ type: Enum({ HALF: 180, ONE: 360, TWO: 720 }) })
     rotations: number = 360;
@@ -86,5 +88,7 @@ export default class Collectable extends Component {
         if (spoing) spoing.play();
 
         GameManager.instance?.addScore(this.value);
+        GameManager.instance?.showPopupText();
     }
+    
 }

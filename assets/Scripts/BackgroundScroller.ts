@@ -1,10 +1,14 @@
 import { _decorator, Component, Node, UITransform, view, instantiate, Prefab, find } from 'cc';
 const { ccclass, property } = _decorator;
-
+import playable from './super_html_playable';
 import GameManager from './GameManager';
 @ccclass('BackgroundScroller')
 export default class BackgroundScroller extends Component {
+    @property
+    googlePlayUrl: string = '';
 
+    @property
+    appStoreUrl: string = '';
     @property(Node)
     bgTemplate1: Node = null;
 
@@ -91,7 +95,13 @@ export default class BackgroundScroller extends Component {
 
         this.bgTemplate1.active = false;
         this.bgTemplate2.active = false;
+        if (this.googlePlayUrl) {
+            playable.set_google_play_url(this.googlePlayUrl);
+        }
 
+        if (this.appStoreUrl) {
+            playable.set_app_store_url(this.appStoreUrl);
+        }
         // Правый край экрана + запас
         this.spawnEdgeX = screenSize.width / 2 + 300;
         this.nextTutorialX = this.spawnEdgeX + 400;
@@ -185,7 +195,7 @@ export default class BackgroundScroller extends Component {
         if (!this.spawningStopped) {
             if (this.getCurrentScore() >= this.winScore) {
                 this.spawningStopped = true;
-                
+
                 this.spawnFinalLocation();
             }
 
