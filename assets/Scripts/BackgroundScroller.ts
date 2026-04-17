@@ -1,6 +1,6 @@
 import { _decorator, Component, Node, UITransform, view, instantiate, Prefab, find } from 'cc';
 const { ccclass, property } = _decorator;
-import playable from './super_html_playable';
+import AdButton from './AdButton';
 import GameManager from './GameManager';
 @ccclass('BackgroundScroller')
 export default class BackgroundScroller extends Component {
@@ -60,6 +60,11 @@ export default class BackgroundScroller extends Component {
     tutorialDistance: number = 300;
     @property(Node)
     spawnContainer: Node = null;
+
+    // Насколько дальше края спавним объекты (чтобы не появлялись на экране)
+    @property
+    spawnOffscreen: number = 2000;
+
     private nextTutorialX: number = 0;
 
     private bgNodes: Node[] = [];
@@ -70,6 +75,7 @@ export default class BackgroundScroller extends Component {
     private frameIndex: number = 0;
 
     private spawnEdgeX: number = 0;
+    private spawnX: number = 0; // ← реальная точка спавна = spawnEdgeX + spawnOffscreen
     private nextCoinX: number = 0;
     private nextEnemyX: number = 0;
 
@@ -85,9 +91,11 @@ export default class BackgroundScroller extends Component {
     public unlockEnemies() {
         this.enemyUnlocked = true;
     }
+
     private getContainer(): Node {
         return this.spawnContainer || this.node.parent;
     }
+
     start() {
         const screenSize = view.getVisibleSize();
         const ui = this.bgTemplate1.getComponent(UITransform);
@@ -95,20 +103,14 @@ export default class BackgroundScroller extends Component {
 
         this.bgTemplate1.active = false;
         this.bgTemplate2.active = false;
-        if (this.googlePlayUrl) {
-            playable.set_google_play_url(this.googlePlayUrl);
-        }
-
-        if (this.appStoreUrl) {
-            playable.set_app_store_url(this.appStoreUrl);
-        }
+        AdButton.instance?.onStartClick();
 
         this.spawnEdgeX = screenSize.width / 2 + 300;
-        this.nextTutorialX = this.spawnEdgeX + 400;
+        this.spawnX = this.spawnEdgeX + this.spawnOffscreen; // ← спавним за экраном
 
-        this.nextCoinX = this.spawnEdgeX + 200;
-        this.nextEnemyX = this.spawnEdgeX + 800;
-
+        this.nextTutorialX = this.spawnX + 400;
+        this.nextCoinX = this.spawnX + 200;
+        this.nextEnemyX = this.spawnX + 800;
 
         for (let i = 0; i < 1 + this.preloadCount; i++) {
             this.spawnNextBG();
@@ -125,7 +127,7 @@ export default class BackgroundScroller extends Component {
 
         const clone = instantiate(template);
         clone.active = true;
-        this.node.addChild(clone); // ← BG всегда в Background node
+        this.node.addChild(clone);
 
         const lastX = this.bgNodes.length > 0
             ? this.bgNodes[this.bgNodes.length - 1].position.x + this.bgWidth
@@ -136,10 +138,9 @@ export default class BackgroundScroller extends Component {
     }
 
     spawnCoin(x: number) {
-
         if (!this.tutorialDone) {
             if (this.tutorialPrefabs.length === 0) return;
-            if (this.nextTutorialX > this.spawnEdgeX) return; // ждём дистанцию
+            if (this.nextTutorialX > this.spawnX) return;
 
             const idx = Math.min(this.tutorialSpawned, this.tutorialPrefabs.length - 1);
             const node = instantiate(this.tutorialPrefabs[idx]);
@@ -147,7 +148,7 @@ export default class BackgroundScroller extends Component {
             node.setPosition(x, this.coinY, 0);
             this.coinNodes.push(node);
             this.tutorialSpawned++;
-            this.nextTutorialX = this.spawnEdgeX + this.tutorialDistance;
+            this.nextTutorialX = this.spawnX + this.tutorialDistance;
             if (this.tutorialSpawned >= 3) this.tutorialDone = true;
             return;
         }
@@ -162,7 +163,7 @@ export default class BackgroundScroller extends Component {
 
     spawnEnemy(x: number) {
         if (!this.tutorialDone) return;
-        if (!this.enemyUnlocked) return; // ← добавь эту строку
+        if (!this.enemyUnlocked) return;
         if (this.enemyPrefabs.length === 0) return;
         if (Math.random() > this.enemySpawnChance) return;
 
@@ -179,7 +180,7 @@ export default class BackgroundScroller extends Component {
 
         const node = instantiate(this.finalLocationPrefab);
         this.getContainer().addChild(node);
-        node.setPosition(this.spawnEdgeX + 200, 0, 0);
+        node.setPosition(this.spawnX, 0, 0);
         this.finalNodes.push(node);
     }
 
@@ -187,7 +188,6 @@ export default class BackgroundScroller extends Component {
         const speed = this.scrollSpeed;
         const halfBG = this.bgWidth / 2;
 
-        // Таймеры двигаем только один раз
         this.nextCoinX -= speed * deltaTime;
         this.nextEnemyX -= speed * deltaTime;
         this.nextTutorialX -= speed * deltaTime;
@@ -195,18 +195,17 @@ export default class BackgroundScroller extends Component {
         if (!this.spawningStopped) {
             if (this.getCurrentScore() >= this.winScore) {
                 this.spawningStopped = true;
-
                 this.spawnFinalLocation();
             }
 
             if (this.nextCoinX <= this.spawnEdgeX) {
-                this.spawnCoin(this.spawnEdgeX);
+                this.spawnCoin(this.spawnX); // ← спавним на spawnX, а не на spawnEdgeX
                 this.nextCoinX = this.spawnEdgeX +
                     this.coinMinDistance + Math.random() * (this.coinMaxDistance - this.coinMinDistance);
             }
 
             if (this.nextEnemyX <= this.spawnEdgeX) {
-                this.spawnEnemy(this.spawnEdgeX);
+                this.spawnEnemy(this.spawnX); // ← то же самое
                 this.nextEnemyX = this.spawnEdgeX +
                     this.enemyMinDistance + Math.random() * (this.enemyMaxDistance - this.enemyMinDistance);
             }

@@ -3,6 +3,7 @@ const { ccclass, property } = _decorator;
 
 import BackgroundScroller from './BackgroundScroller';
 import PlayerController from './PlayerController';
+import { EnemyMove } from './EnemyMove';
 
 @ccclass('TutorialTrigger3')
 export default class TutorialTrigger3 extends Component {
@@ -13,10 +14,16 @@ export default class TutorialTrigger3 extends Component {
     @property(Node)
     bandit: Node = null;
 
-    private triggered: boolean = false;
+
     private playerNode: Node = null;
     private readyUI: Node = null;
     private banditAnim: Animation = null;
+    private enemyMove: EnemyMove = null;
+    private triggered: boolean = false;
+    private inputLocked: boolean = false;
+    private uiReady: boolean = false;
+    @property
+    jumpDelay: number = 0.3;
 
     start() {
         this.playerNode = find('Canvas/Player');
@@ -24,10 +31,10 @@ export default class TutorialTrigger3 extends Component {
 
         if (this.bandit) {
             this.banditAnim = this.bandit.getComponent(Animation);
+            this.enemyMove = this.bandit.getComponent(EnemyMove); // 🔥 добавили
         }
 
         const controller = this.playerNode?.getComponent(PlayerController);
-
         if (controller) controller.setJumpEnabled(false);
     }
 
@@ -35,41 +42,61 @@ export default class TutorialTrigger3 extends Component {
         if (this.triggered || !this.playerNode) return;
 
         const distX = this.node.worldPosition.x - this.playerNode.worldPosition.x;
+
         if (distX > 0 && distX < this.triggerDistance) {
             this.triggered = true;
+
+            this.enemyMove?.pause();
             this.showUI();
+
             const controller = this.playerNode?.getComponent(PlayerController);
-            controller.playAnim("idle")
+            controller?.playAnim("idle");
         }
+    }
+    private enableInput() {
+        this.inputLocked = false;
+
+        input.on(Input.EventType.TOUCH_START, this.onTap, this);
+        input.on(Input.EventType.MOUSE_DOWN, this.onTap, this);
     }
 
     showUI() {
-        const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
-        if (scroller) scroller.setSpeed(0);
+        this.inputLocked = true; // 🔥 блокируем тап
 
-        if (this.banditAnim) {
-            this.banditAnim.pause();
-        }
+        const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
+        scroller?.setSpeed(0);
+
+        this.banditAnim?.pause();
 
         if (!this.readyUI) return;
 
         this.readyUI.active = true;
         this.readyUI.setScale(0, 0, 1);
+
         const controller = this.playerNode?.getComponent(PlayerController);
-        controller.setJumpEnabled(false);
+        controller?.setJumpEnabled(false);
+
         tween(this.readyUI)
-            .to(0.3, { scale: new Vec3(1, 1, 1) }, { easing: 'backOut' })
+            .to(0.1, { scale: new Vec3(1, 1, 1) }, { easing: 'backOut' })
             .call(() => {
-                input.on(Input.EventType.TOUCH_START, this.onTap, this);
-                input.on(Input.EventType.MOUSE_DOWN, this.onTap, this);
+                this.enableInput();
             })
             .start();
     }
 
     onTap() {
+        if (this.inputLocked) return;
+
+        this.inputLocked = true;
         input.off(Input.EventType.TOUCH_START, this.onTap, this);
         input.off(Input.EventType.MOUSE_DOWN, this.onTap, this);
-
+        const controller = this.playerNode?.getComponent(PlayerController);
+        this.banditAnim?.resume();
+        if (controller) {
+            controller.setJumpEnabled(true);
+            controller.startRunning();
+            controller.jump();
+        }
         if (!this.readyUI) return;
 
         tween(this.readyUI)
@@ -78,19 +105,17 @@ export default class TutorialTrigger3 extends Component {
                 this.readyUI.active = false;
 
                 const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
-                if (scroller) {
-                    scroller.setSpeed(700);
-                    scroller.unlockEnemies(); // ← добавь
-                }
+                scroller?.setSpeed(700);
+                scroller?.unlockEnemies();
 
-                if (this.banditAnim) this.banditAnim.resume();
+                
 
-                const controller = this.playerNode?.getComponent(PlayerController);
-                if (controller) {
-                    controller.setJumpEnabled(true);
-                    controller.startRunning();
-                    controller.jump();
-                }
+                this.scheduleOnce(() => {
+
+
+                    this.enemyMove?.resume();
+                }, this.jumpDelay);
+
             })
             .start();
     }

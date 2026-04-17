@@ -263,7 +263,7 @@
       "__expectedType__": "cc.AudioClip"
     },
     "_loop": true,
-    "_playOnAwake": true,
+    "_playOnAwake": false,
     "_volume": 1,
     "_id": "9cRDLgH/9CpqaNq4/a8Z+k"
   },
@@ -2462,6 +2462,7 @@
     "spawnContainer": {
       "__id__": 100
     },
+    "spawnOffscreen": 2000,
     "_id": "dd79rgqKdL/L/G9d3t0UT0"
   },
   {
@@ -4870,7 +4871,7 @@
     "node": {
       "__id__": 166
     },
-    "_enabled": true,
+    "_enabled": false,
     "__prefab": null,
     "tapUI": {
       "__id__": 166
@@ -5827,7 +5828,7 @@
   {
     "__type__": "cc.Node",
     "_name": "Label",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 204
@@ -7423,7 +7424,7 @@
   {
     "__type__": "cc.Node",
     "_name": "Label",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 247
@@ -8540,7 +8541,6 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "ctaPanel": null,
     "_id": "adpErf9iJBKIHVJ6Z2Vve7"
   },
   {
