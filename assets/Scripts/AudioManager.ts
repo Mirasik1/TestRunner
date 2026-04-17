@@ -1,6 +1,6 @@
 import { _decorator, Component, AudioClip, AudioSource, find } from 'cc';
 const { ccclass, property } = _decorator;
-
+import { director } from 'cc';
 @ccclass('AudioManager')
 export default class AudioManager extends Component {
 
@@ -32,17 +32,35 @@ export default class AudioManager extends Component {
 
     private bgSource: AudioSource = null;
     private sfxSource: AudioSource = null;
-
+    private audioStarted: boolean = false;
     onLoad() {
         AudioManager.instance = this;
 
         const sources = this.getComponents(AudioSource);
-        this.bgSource = sources[0];
-        this.sfxSource = sources[1];
 
-        this.playBGMusic();
+        this.bgSource = sources[0] || this.node.addComponent(AudioSource);
+        this.sfxSource = sources[1] || this.node.addComponent(AudioSource);
     }
+    enableAudio() {
+        if (this.audioStarted) return;
+        this.audioStarted = true;
 
+        // 🔥 критично
+        director.resume();
+
+        // 🔥 пересоздаём звук после клика
+        if (this.bgSource && this.bgMusic) {
+            this.bgSource.stop(); // важно
+            this.bgSource.clip = this.bgMusic;
+            this.bgSource.loop = true;
+            this.bgSource.volume = this.bgVolume;
+
+            // 🔥 задержка — фикс autoplay
+            setTimeout(() => {
+                this.bgSource.play();
+            }, 0);
+        }
+    }
     playBGMusic() {
         if (!this.bgSource || !this.bgMusic) return;
         this.bgSource.clip = this.bgMusic;

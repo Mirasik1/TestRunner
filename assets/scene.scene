@@ -279,7 +279,7 @@
     "__prefab": null,
     "_clip": null,
     "_loop": false,
-    "_playOnAwake": true,
+    "_playOnAwake": false,
     "_volume": 1,
     "_id": "dfEd4GF51EyruMYmscyhfI"
   },
@@ -2483,7 +2483,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 104.327,
+      "y": 76.359,
       "z": 0
     },
     "_lrot": {
@@ -4627,7 +4627,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "Tap to start eraning!",
+    "_string": "Jump to avoid enemies",
     "_horizontalAlign": 2,
     "_verticalAlign": 2,
     "_actualFontSize": 40,
@@ -4881,7 +4881,7 @@
     "label": {
       "__id__": 169
     },
-    "labelText": "Tap To Start Earning",
+    "labelText": "Jump to avoid enemies",
     "isTutorialMode": false,
     "_id": "3234V20DlIo5RwI23/aLxf"
   },
@@ -8540,6 +8540,7 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "ctaPanel": null,
     "_id": "adpErf9iJBKIHVJ6Z2Vve7"
   },
   {

@@ -4,6 +4,7 @@ const { ccclass, property } = _decorator;
 import BackgroundScroller from './BackgroundScroller';
 import AudioManager from './AudioManager';
 import GameManager from './GameManager';
+import PlayerController from './PlayerController';
 @ccclass('WinScreen')
 export default class WinScreen extends Component {
 
@@ -38,6 +39,9 @@ export default class WinScreen extends Component {
 
     public show() {
         const scroller = find('Canvas/Background')?.getComponent(BackgroundScroller);
+        const player = find('Canvas/Player');
+        const controller = player?.getComponent(PlayerController);
+        controller?.playAnim("idle")
         if (scroller) scroller.setSpeed(0);
 
         if (this.scoreLabel) {

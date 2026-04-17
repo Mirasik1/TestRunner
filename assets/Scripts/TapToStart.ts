@@ -4,7 +4,7 @@ const { ccclass, property } = _decorator;
 import Spoing from './Spoing';
 import BackgroundScroller from './BackgroundScroller';
 import PlayerController from './PlayerController';
-
+import AudioManager from './AudioManager';
 @ccclass('TapToStart')
 export default class TapToStart extends Component {
 
@@ -42,7 +42,7 @@ export default class TapToStart extends Component {
             const scroller = bg?.getComponent(BackgroundScroller);
             if (scroller) scroller.setSpeed(0);
 
-            this.show('Tap To Start Earning', () => {
+            this.show(this.labelText, () => {
                 this.startGame();
             });
         } else {
@@ -68,36 +68,36 @@ export default class TapToStart extends Component {
     }
 
     onTap() {
-        if (!this.isWaiting) return;
-        this.isWaiting = false;
+    if (!this.isWaiting) return;
+    this.isWaiting = false;
 
-        input.off(Input.EventType.TOUCH_START, this.onTap, this);
-        input.off(Input.EventType.MOUSE_DOWN, this.onTap, this);
+    AudioManager.instance?.enableAudio();
 
-        tween(this.tapUI)
-            .to(0.2, { scale: new Vec3(0, 0, 1) }, { easing: 'backIn' })
-            .call(() => {
-                this.tapUI.active = false;
-                if (this.onComplete) {
-                    this.onComplete();
-                    this.onComplete = null;
-                }
-                const player = find('Canvas/Player');
-                const controller = player?.getComponent(PlayerController);
-                controller.setJumpEnabled(true)
-            })
-            .start();
-    }
+    input.off(Input.EventType.TOUCH_START, this.onTap, this);
+    input.off(Input.EventType.MOUSE_DOWN, this.onTap, this);
+
+    tween(this.tapUI)
+        .to(0.2, { scale: new Vec3(0, 0, 1) }, { easing: 'backIn' })
+        .call(() => {
+            this.tapUI.active = false;
+            if (this.onComplete) {
+                this.onComplete();
+                this.onComplete = null;
+            }
+            
+        })
+        .start();
+}
 
     startGame() {
-        const bg = find('Canvas/Background');
-        const scroller = bg?.getComponent(BackgroundScroller);
-        if (scroller) scroller.setSpeed(700);
+    const bg = find('Canvas/Background');
+    const scroller = bg?.getComponent(BackgroundScroller);
+    if (scroller) scroller.setSpeed(700);
 
-        const controller = this.playerNode?.getComponent(PlayerController);
-        if (controller) {
-            controller.setJumpEnabled(true);
-            controller.startRunning();
-        }
+    const controller = this.playerNode?.getComponent(PlayerController);
+    if (controller) {
+        // jumpEnabled остаётся false — TutorialTrigger3 разрешит когда надо
+        controller.startRunning();
     }
+}
 }
